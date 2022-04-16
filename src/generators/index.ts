@@ -134,7 +134,6 @@ Solidity.finish = function (code) {
  * @return {string} Legal line of code.
  */
 Solidity.scrubNakedValue = function (line) {
-  console.log({ line });
   return line + ";\n";
 };
 
@@ -205,7 +204,6 @@ Solidity.scrub_ = function (block, code, opt_thisOnly) {
   }
   const nextBlock = block.nextConnection && block.nextConnection.targetBlock();
   const nextCode = opt_thisOnly ? "" : this.blockToCode(nextBlock);
-  console.log({ commentCode, code, nextCode });
 
   return commentCode + code + nextCode;
 };

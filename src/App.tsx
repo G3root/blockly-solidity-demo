@@ -9,7 +9,6 @@ Blockly.Blocks["pragma"] = {
     this.appendDummyInput()
       .appendField("pragma solidity")
       .appendField(new Blockly.FieldTextInput("^0.8.10"), "VALUE");
-    this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(230);
@@ -38,9 +37,11 @@ Blockly.Blocks["spdx"] = {
 Blockly.Blocks["file"] = {
   init: function () {
     this.appendStatementInput("FILE")
+      .setCheck(null)
       .appendField("File Name")
-      .appendField(new Blockly.FieldTextInput("Hello World"), "VALUE");
-    this.setColour(30);
+      .appendField(new Blockly.FieldTextInput("Hello World"), "VALUE")
+      .appendField(".sol");
+    this.setColour(230);
     this.setTooltip("");
     this.setHelpUrl("");
   },
@@ -62,6 +63,8 @@ Blockly.Blocks["contract"] = {
 
 Solidity["spdx"] = function (block) {
   const value = block.getFieldValue("VALUE");
+  const isParentFile = block.getSurroundParent()?.type === "file";
+  if (!isParentFile) return "";
 
   const code = `// SPDX-License-Identifier: ${value} \n`;
   return code;
@@ -69,15 +72,16 @@ Solidity["spdx"] = function (block) {
 
 Solidity["pragma"] = function (block) {
   const value = block.getFieldValue("VALUE");
-
+  const isParentFile = block.getSurroundParent()?.type === "file";
+  if (!isParentFile) return "";
   const code = `pragma solidity ${value} ; \n`;
   return code;
 };
 
 Solidity["contract"] = function (block) {
   const fieldName = block.getFieldValue("VALUE");
-  const value = Solidity.statementToCode(block, "VALUE");
-
+  const isParentFile = block.getSurroundParent()?.type === "file";
+  if (!isParentFile) return "";
   const code = `contract ${fieldName} {\n\n}`;
 
   return code;
@@ -85,7 +89,6 @@ Solidity["contract"] = function (block) {
 
 Solidity["file"] = function (block) {
   const value = Solidity.statementToCode(block, "FILE");
-  console.log(value);
 
   return value;
 };
