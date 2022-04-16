@@ -2,6 +2,7 @@ import { useRef } from "react";
 import "./App.css";
 import { BlocklyWorkspace } from "react-blockly";
 import Blockly from "blockly";
+import { Solidity } from "./generators";
 
 Blockly.Blocks["pragma"] = {
   init: function () {
@@ -59,31 +60,31 @@ Blockly.Blocks["contract"] = {
   },
 };
 
-Blockly.JavaScript["spdx"] = function (block) {
+Solidity["spdx"] = function (block) {
   const value = block.getFieldValue("VALUE");
 
   const code = `// SPDX-License-Identifier: ${value} \n`;
   return code;
 };
 
-Blockly.JavaScript["pragma"] = function (block) {
+Solidity["pragma"] = function (block) {
   const value = block.getFieldValue("VALUE");
 
   const code = `pragma solidity ${value} ; \n`;
   return code;
 };
 
-Blockly.JavaScript["contract"] = function (block) {
+Solidity["contract"] = function (block) {
   const fieldName = block.getFieldValue("VALUE");
-  const value = Blockly.JavaScript.statementToCode(block, "VALUE");
+  const value = Solidity.statementToCode(block, "VALUE");
 
   const code = `contract ${fieldName} {\n\n}`;
 
   return code;
 };
 
-Blockly.JavaScript["file"] = function (block) {
-  const value = Blockly.JavaScript.statementToCode(block, "FILE");
+Solidity["file"] = function (block) {
+  const value = Solidity.statementToCode(block, "FILE");
   console.log(value);
 
   return value;
@@ -127,7 +128,7 @@ function App() {
     ],
   };
   function workspaceDidChange(workspace) {
-    const code = Blockly.JavaScript.workspaceToCode(workspace);
+    const code = Solidity.workspaceToCode(workspace);
     if (textAreaRef.current) {
       textAreaRef.current.value = code;
     }
